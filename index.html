@@ -1,0 +1,886 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>REIDY Financial Services</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,500;0,600;0,700;1,400&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body { font-family: 'Inter', sans-serif; background: #0d0d0d; color: white; overflow-x: hidden; }
+    .font-serif { font-family: 'Playfair Display', serif; }
+
+    /* Accent gradient */
+    .g-btn { background: linear-gradient(90deg, #f0c040 0%, #00c896 50%, #4a9eff 100%); }
+    .g-text {
+      background: linear-gradient(90deg, #f0c040 0%, #00c896 50%, #4a9eff 100%);
+      -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;
+    }
+    .card-dark { background: #161616; border: 1px solid #222; border-radius: 24px; }
+    .card-white { background: #fff; border-radius: 24px; }
+
+    /* ——— ANIMATIONS ——— */
+
+    /* Floating dashboard */
+    @keyframes float {
+      0%, 100% { transform: translateY(-50%) translateY(0px); }
+      50%       { transform: translateY(-50%) translateY(-10px); }
+    }
+    .hero-dashboard { animation: float 6s ease-in-out infinite; }
+
+    /* Stat cards gentle bob */
+    @keyframes bob {
+      0%, 100% { transform: translateY(0px); }
+      50%       { transform: translateY(-5px); }
+    }
+    .bob-1 { animation: bob 5s ease-in-out infinite; }
+    .bob-2 { animation: bob 5s ease-in-out infinite 0.8s; }
+
+    /* Live dot pulse */
+    @keyframes livePulse {
+      0%, 100% { opacity: 1; transform: scale(1); }
+      50%       { opacity: 0.4; transform: scale(1.4); }
+    }
+    .live-dot { animation: livePulse 1.4s ease-in-out infinite; }
+
+    /* Gradient button shimmer */
+    @keyframes shimmer {
+      0%   { background-position: -200% center; }
+      100% { background-position: 200% center; }
+    }
+    .g-btn-animated {
+      background: linear-gradient(90deg, #f0c040, #00c896, #4a9eff, #f0c040);
+      background-size: 300% 100%;
+      animation: shimmer 3s linear infinite;
+    }
+
+    /* Ticker scroll */
+    @keyframes ticker { 0% { transform: translateX(0); } 100% { transform: translateX(-50%); } }
+    .ticker-track { animation: ticker 26s linear infinite; }
+
+    /* Scroll reveal */
+    .reveal { opacity: 0; transform: translateY(32px); transition: opacity 0.7s ease, transform 0.7s ease; }
+    .reveal.visible { opacity: 1; transform: translateY(0); }
+    .reveal-left { opacity: 0; transform: translateX(-32px); transition: opacity 0.7s ease, transform 0.7s ease; }
+    .reveal-left.visible { opacity: 1; transform: translateX(0); }
+    .reveal-right { opacity: 0; transform: translateX(32px); transition: opacity 0.7s ease, transform 0.7s ease; }
+    .reveal-right.visible { opacity: 1; transform: translateX(0); }
+
+    /* Staggered children */
+    .stagger > *:nth-child(1) { transition-delay: 0s; }
+    .stagger > *:nth-child(2) { transition-delay: 0.12s; }
+    .stagger > *:nth-child(3) { transition-delay: 0.24s; }
+
+    /* Hover lift on cards */
+    .hover-lift { transition: transform 0.25s ease, box-shadow 0.25s ease; }
+    .hover-lift:hover { transform: translateY(-6px); box-shadow: 0 30px 60px rgba(0,0,0,0.5); }
+
+    /* Number count-up */
+    .count-num { font-variant-numeric: tabular-nums; }
+
+    /* Bar fill animation */
+    .bar-fill { width: 0%; transition: width 1.4s cubic-bezier(0.16, 1, 0.3, 1); }
+
+    /* Chart draw-on */
+    .chart-line { stroke-dasharray: 600; stroke-dashoffset: 600; transition: stroke-dashoffset 2s ease; }
+    .chart-line.drawn { stroke-dashoffset: 0; }
+    .chart-area { opacity: 0; transition: opacity 1s ease 1s; }
+    .chart-area.drawn { opacity: 1; }
+
+    /* Allocation bars in hero */
+    .alloc-bar { width: 0%; transition: width 1.6s cubic-bezier(0.16, 1, 0.3, 1); }
+
+    /* Ripple on button click */
+    .ripple-btn { position: relative; overflow: hidden; }
+    .ripple-btn .ripple { position: absolute; border-radius: 50%; transform: scale(0); animation: rippleAnim 0.6s linear; background: rgba(255,255,255,0.3); pointer-events: none; }
+    @keyframes rippleAnim { to { transform: scale(4); opacity: 0; } }
+
+    /* Omar spotlight glow */
+    @keyframes spotlightGlow {
+      0%, 100% { box-shadow: 0 0 0 0 rgba(240,192,64,0); }
+      50%       { box-shadow: 0 0 30px 8px rgba(240,192,64,0.15); }
+    }
+    .omar-card { animation: spotlightGlow 3s ease-in-out infinite; }
+
+    /* Particle dots */
+    .particle { position: absolute; border-radius: 50%; pointer-events: none; }
+
+    /* Typewriter cursor */
+    @keyframes blink { 0%, 100% { opacity: 1; } 50% { opacity: 0; } }
+    .cursor { display: inline-block; width: 3px; height: 0.85em; background: #f0c040; margin-left: 2px; vertical-align: middle; animation: blink 1s step-end infinite; }
+
+    /* Nav scroll state */
+    nav.scrolled { background: rgba(13,13,13,0.95) !important; backdrop-filter: blur(16px); }
+
+    /* Pain card highlight numbers */
+    .pain-stat { color: #ff6b6b; font-weight: 600; }
+
+    /* Portfolio value live increment */
+    @keyframes valueFlash { 0% { color: #00c896; } 100% { color: white; } }
+    .value-flash { animation: valueFlash 0.4s ease; }
+
+    /* CTA section gradient bg */
+    @keyframes gradientShift {
+      0%   { background-position: 0% 50%; }
+      50%  { background-position: 100% 50%; }
+      100% { background-position: 0% 50%; }
+    }
+    .cta-gradient {
+      background: linear-gradient(270deg, #0d0d0d, #111, #0d0d0d, #161616);
+      background-size: 400% 400%;
+      animation: gradientShift 8s ease infinite;
+    }
+  </style>
+</head>
+<body>
+
+  <!-- ===================== ANNOUNCEMENT ===================== -->
+  <div id="announcementBar" style="background:#111;border-bottom:1px solid #1e1e1e;text-align:center;padding:10px 16px;font-size:12px;color:#666;letter-spacing:0.03em;position:relative;">
+    Limited offer: Start your <span style="color:#f0c040;font-weight:600;">free 30-day trial</span> — no credit card required.
+    <span style="color:#aaa;margin-left:8px;cursor:pointer;text-decoration:underline;">Claim offer »</span>
+    <button onclick="document.getElementById('announcementBar').style.display='none'" style="position:absolute;right:16px;top:50%;transform:translateY(-50%);background:none;border:none;color:#444;cursor:pointer;font-size:16px;">×</button>
+  </div>
+
+  <!-- ===================== NAV ===================== -->
+  <nav id="mainNav" style="background:#0d0d0d;border-bottom:1px solid #1a1a1a;padding:14px 40px;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:100;transition:all 0.3s ease;">
+    <div style="display:flex;gap:28px;">
+      <a href="#" style="color:#999;font-size:14px;font-weight:500;text-decoration:none;transition:color 0.2s;" onmouseover="this.style.color='#fff'" onmouseout="this.style.color='#999'">Products</a>
+      <a href="#" style="color:#999;font-size:14px;font-weight:500;text-decoration:none;transition:color 0.2s;" onmouseover="this.style.color='#fff'" onmouseout="this.style.color='#999'">Resources</a>
+      <a href="#" style="color:#999;font-size:14px;font-weight:500;text-decoration:none;transition:color 0.2s;" onmouseover="this.style.color='#fff'" onmouseout="this.style.color='#999'">Pricing</a>
+    </div>
+    <div style="display:flex;align-items:center;gap:8px;">
+      <div class="g-btn" style="width:22px;height:22px;border-radius:50%;display:flex;align-items:center;justify-content:center;">
+        <span style="color:#0d0d0d;font-weight:900;font-size:11px;">R</span>
+      </div>
+      <span style="color:white;font-weight:600;font-size:17px;letter-spacing:-0.02em;margin-left:4px;">REIDY</span>
+      <span style="color:#333;font-size:13px;margin:0 6px;">Financial</span>
+      <span style="color:white;font-size:13px;font-weight:600;letter-spacing:0.15em;text-transform:uppercase;">Services</span>
+    </div>
+    <div style="display:flex;align-items:center;gap:20px;">
+      <a href="#" style="color:#999;font-size:14px;font-weight:500;text-decoration:none;">Login</a>
+      <button class="g-btn-animated ripple-btn" onclick="addRipple(event)" style="color:#0d0d0d;border-radius:50px;padding:8px 20px;font-size:13px;font-weight:700;border:none;cursor:pointer;">Get Started Free</button>
+    </div>
+  </nav>
+
+  <!-- ===================== HERO ===================== -->
+  <section style="position:relative;min-height:820px;display:flex;align-items:center;padding:0 40px;background:#0d0d0d;overflow:hidden;" id="hero">
+
+    <!-- Animated particle dots -->
+    <canvas id="particleCanvas" style="position:absolute;inset:0;pointer-events:none;opacity:0.4;"></canvas>
+
+    <!-- Left: Hero Copy -->
+    <div style="max-width:560px;position:relative;z-index:2;">
+      <div style="display:inline-flex;align-items:center;gap:8px;background:#1a1a1a;border:1px solid #2a2a2a;border-radius:50px;padding:6px 14px;margin-bottom:24px;">
+        <span class="live-dot" style="width:6px;height:6px;border-radius:50%;background:#00c896;display:inline-block;flex-shrink:0;"></span>
+        <span style="font-size:11px;color:#888;letter-spacing:0.08em;text-transform:uppercase;">Trusted by 47,000+ Americans</span>
+      </div>
+
+      <h1 class="font-serif" style="font-size:76px;line-height:1.03;font-weight:500;color:white;margin-bottom:12px;">
+        Your money should<br>work as hard<br>
+        <span class="g-text" id="heroTagline">as you do.</span><span class="cursor" id="heroCursor" style="display:none;"></span>
+      </h1>
+
+      <p style="font-size:14px;line-height:1.75;color:#555;max-width:360px;margin-bottom:32px;">
+        While you're working, inflation is quietly shrinking your savings. REIDY gives everyday Americans the same AI-powered investment tools used by Wall Street wealth managers — finally within reach.
+      </p>
+
+      <div style="display:flex;gap:12px;align-items:center;margin-bottom:40px;">
+        <button class="g-btn-animated ripple-btn" onclick="addRipple(event)" style="color:#0d0d0d;border-radius:50px;padding:14px 32px;font-size:14px;font-weight:700;border:none;cursor:pointer;">Start Free — No Card Needed</button>
+        <button style="background:transparent;border:1px solid #2a2a2a;color:#888;border-radius:50px;padding:14px 24px;font-size:14px;cursor:pointer;transition:all 0.2s;" onmouseover="this.style.borderColor='#555';this.style.color='#fff'" onmouseout="this.style.borderColor='#2a2a2a';this.style.color='#888'">See how it works ›</button>
+      </div>
+
+      <!-- Micro social proof -->
+      <div style="display:flex;align-items:center;gap:12px;">
+        <div style="display:flex;">
+          <div style="width:28px;height:28px;border-radius:50%;background:#1a2a1a;border:2px solid #0d0d0d;display:flex;align-items:center;justify-content:center;font-size:10px;color:#00c896;font-weight:700;margin-left:-6px;">JL</div>
+          <div style="width:28px;height:28px;border-radius:50%;background:#1a1a2a;border:2px solid #0d0d0d;display:flex;align-items:center;justify-content:center;font-size:10px;color:#4a9eff;font-weight:700;margin-left:-6px;">MR</div>
+          <div style="width:28px;height:28px;border-radius:50%;background:#2a1a1a;border:2px solid #0d0d0d;display:flex;align-items:center;justify-content:center;font-size:10px;color:#f0c040;font-weight:700;margin-left:-6px;">OR</div>
+          <div class="g-btn" style="width:28px;height:28px;border-radius:50%;border:2px solid #0d0d0d;display:flex;align-items:center;justify-content:center;font-size:9px;color:#0d0d0d;font-weight:700;margin-left:-6px;">47K</div>
+        </div>
+        <span style="font-size:12px;color:#444;">Join <span style="color:#f0c040;font-weight:600;">47,000+</span> Americans already building wealth</span>
+      </div>
+    </div>
+
+    <!-- Right: Live Dashboard Widget (floating) -->
+    <div class="hero-dashboard" style="position:absolute;right:40px;top:50%;width:420px;z-index:2;">
+
+      <!-- Main Portfolio Card -->
+      <div class="card-dark hover-lift" style="padding:24px;margin-bottom:12px;">
+        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:6px;">
+          <span style="font-size:11px;color:#555;">Total Portfolio Value</span>
+          <span style="font-size:10px;background:rgba(0,200,150,0.1);color:#00c896;border-radius:50px;padding:3px 10px;font-weight:600;display:flex;align-items:center;gap:5px;">
+            <span class="live-dot" style="width:5px;height:5px;border-radius:50%;background:#00c896;display:inline-block;"></span>LIVE
+          </span>
+        </div>
+        <div style="display:flex;align-items:flex-end;gap:12px;margin-bottom:20px;">
+          <span class="font-serif count-num" id="portfolioValue" style="font-size:40px;font-weight:500;color:white;line-height:1;">$248,392</span>
+          <span style="font-size:13px;font-weight:600;color:#00c896;padding-bottom:4px;" id="portfolioDelta">▲ +$1,204 today</span>
+        </div>
+
+        <!-- Animated sparkline -->
+        <div style="margin-bottom:16px;">
+          <svg viewBox="0 0 380 64" style="width:100%;height:64px;" preserveAspectRatio="none">
+            <defs>
+              <linearGradient id="sg" x1="0" y1="0" x2="0" y2="1">
+                <stop offset="0%" stop-color="#00c896" stop-opacity="0.2"/>
+                <stop offset="100%" stop-color="#00c896" stop-opacity="0"/>
+              </linearGradient>
+            </defs>
+            <path class="chart-area" id="sparkArea" d="M0 55 C30 52 50 48 80 44 C110 40 120 50 150 40 C180 30 195 42 220 28 C245 16 260 24 290 14 C315 6 340 10 380 4 L380 64 L0 64Z" fill="url(#sg)"/>
+            <path class="chart-line" id="sparkLine" d="M0 55 C30 52 50 48 80 44 C110 40 120 50 150 40 C180 30 195 42 220 28 C245 16 260 24 290 14 C315 6 340 10 380 4" fill="none" stroke="#00c896" stroke-width="2"/>
+          </svg>
+          <div style="display:flex;justify-content:space-between;font-size:10px;color:#333;margin-top:4px;">
+            <span>Jan</span><span>Mar</span><span>May</span><span>Jul</span><span>Now</span>
+          </div>
+        </div>
+
+        <!-- Animated allocation bars -->
+        <div style="display:flex;flex-direction:column;gap:10px;">
+          <div style="display:flex;align-items:center;gap:10px;">
+            <span style="font-size:11px;color:#555;width:52px;">Equities</span>
+            <div style="flex:1;height:5px;background:#1e1e1e;border-radius:4px;overflow:hidden;">
+              <div class="alloc-bar" id="bar1" style="height:100%;background:#f0c040;border-radius:4px;" data-target="62"></div>
+            </div>
+            <span style="font-size:11px;color:#ddd;font-weight:600;width:28px;text-align:right;">62%</span>
+          </div>
+          <div style="display:flex;align-items:center;gap:10px;">
+            <span style="font-size:11px;color:#555;width:52px;">Bonds</span>
+            <div style="flex:1;height:5px;background:#1e1e1e;border-radius:4px;overflow:hidden;">
+              <div class="alloc-bar" id="bar2" style="height:100%;background:#4a9eff;border-radius:4px;" data-target="24"></div>
+            </div>
+            <span style="font-size:11px;color:#ddd;font-weight:600;width:28px;text-align:right;">24%</span>
+          </div>
+          <div style="display:flex;align-items:center;gap:10px;">
+            <span style="font-size:11px;color:#555;width:52px;">Cash</span>
+            <div style="flex:1;height:5px;background:#1e1e1e;border-radius:4px;overflow:hidden;">
+              <div class="alloc-bar" id="bar3" style="height:100%;background:#333;border-radius:4px;" data-target="14"></div>
+            </div>
+            <span style="font-size:11px;color:#ddd;font-weight:600;width:28px;text-align:right;">14%</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Stat cards -->
+      <div style="display:flex;gap:12px;">
+        <div class="card-dark bob-1 hover-lift" style="flex:1;padding:16px;">
+          <div style="font-size:10px;color:#444;margin-bottom:6px;">Today's Gain</div>
+          <div style="font-size:22px;font-weight:600;color:#00c896;" id="gainValue">+$1,204</div>
+          <div style="font-size:10px;color:#333;margin-top:2px;">+0.49% today</div>
+        </div>
+        <div class="card-dark bob-2 hover-lift" style="flex:1;padding:16px;">
+          <div style="font-size:10px;color:#444;margin-bottom:6px;">AI Risk Score</div>
+          <div style="display:flex;align-items:flex-end;gap:6px;">
+            <span style="font-size:22px;font-weight:600;color:white;">Low</span>
+            <span style="font-size:11px;color:#f0c040;padding-bottom:3px;font-weight:600;">82/100</span>
+          </div>
+          <div style="font-size:10px;color:#333;margin-top:2px;">Optimally balanced</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===================== TICKER ===================== -->
+  <div style="background:#111;border-top:1px solid #1a1a1a;border-bottom:1px solid #1a1a1a;overflow:hidden;padding:10px 0;">
+    <div class="ticker-track" style="display:flex;gap:48px;white-space:nowrap;width:200%;">
+      <span style="color:#444;font-size:11px;">S&amp;P 500 <span style="color:#00c896;">▲ 4,892.11 +0.34%</span></span>
+      <span style="color:#444;font-size:11px;">NASDAQ <span style="color:#00c896;">▲ 17,234.44 +0.61%</span></span>
+      <span style="color:#444;font-size:11px;">DOW <span style="color:#444;">▼ 38,110 -0.12%</span></span>
+      <span style="color:#444;font-size:11px;">BTC/USD <span style="color:#f0c040;">▲ $67,204 +1.8%</span></span>
+      <span style="color:#444;font-size:11px;">EUR/USD <span style="color:#4a9eff;">1.0842 +0.09%</span></span>
+      <span style="color:#444;font-size:11px;">Gold <span style="color:#f0c040;">▲ $2,348 +0.22%</span></span>
+      <span style="color:#444;font-size:11px;">10Y Treasury <span style="color:#4a9eff;">4.42%</span></span>
+      <span style="color:#444;font-size:11px;">Apple <span style="color:#00c896;">▲ $189.40 +0.9%</span></span>
+      <span style="color:#444;font-size:11px;">S&amp;P 500 <span style="color:#00c896;">▲ 4,892.11 +0.34%</span></span>
+      <span style="color:#444;font-size:11px;">NASDAQ <span style="color:#00c896;">▲ 17,234.44 +0.61%</span></span>
+      <span style="color:#444;font-size:11px;">DOW <span style="color:#444;">▼ 38,110 -0.12%</span></span>
+      <span style="color:#444;font-size:11px;">BTC/USD <span style="color:#f0c040;">▲ $67,204 +1.8%</span></span>
+      <span style="color:#444;font-size:11px;">EUR/USD <span style="color:#4a9eff;">1.0842 +0.09%</span></span>
+      <span style="color:#444;font-size:11px;">Gold <span style="color:#f0c040;">▲ $2,348 +0.22%</span></span>
+      <span style="color:#444;font-size:11px;">10Y Treasury <span style="color:#4a9eff;">4.42%</span></span>
+      <span style="color:#444;font-size:11px;">Apple <span style="color:#00c896;">▲ $189.40 +0.9%</span></span>
+    </div>
+  </div>
+
+  <!-- ===================== TRUST BAR ===================== -->
+  <div style="background:#111;padding:48px 40px;display:flex;justify-content:center;gap:80px;border-bottom:1px solid #1a1a1a;" class="reveal stagger" id="trustBar">
+    <div style="text-align:center;">
+      <div class="font-serif g-text count-num" style="font-size:38px;font-weight:600;" data-count="2.4" data-suffix="B" data-prefix="$">$0B</div>
+      <div style="font-size:11px;color:#444;margin-top:4px;letter-spacing:0.08em;text-transform:uppercase;">Assets Managed</div>
+    </div>
+    <div style="text-align:center;">
+      <div class="font-serif count-num" style="font-size:38px;font-weight:600;color:white;" data-count="47000" data-suffix="+" data-prefix="">0+</div>
+      <div style="font-size:11px;color:#444;margin-top:4px;letter-spacing:0.08em;text-transform:uppercase;">Active Users</div>
+    </div>
+    <div style="text-align:center;">
+      <div class="font-serif count-num" style="font-size:38px;font-weight:600;color:#00c896;" data-count="18.3" data-suffix="%" data-prefix="">0%</div>
+      <div style="font-size:11px;color:#444;margin-top:4px;letter-spacing:0.08em;text-transform:uppercase;">Avg Annual Return</div>
+    </div>
+    <div style="text-align:center;">
+      <div class="font-serif count-num" style="font-size:38px;font-weight:600;color:white;" data-count="4.9" data-suffix="★" data-prefix="">0★</div>
+      <div style="font-size:11px;color:#444;margin-top:4px;letter-spacing:0.08em;text-transform:uppercase;">App Store Rating</div>
+    </div>
+    <div style="text-align:center;">
+      <div class="font-serif count-num" style="font-size:38px;font-weight:600;color:#f0c040;" data-count="60" data-suffix="+" data-prefix="">0+</div>
+      <div style="font-size:11px;color:#444;margin-top:4px;letter-spacing:0.08em;text-transform:uppercase;">Countries Served</div>
+    </div>
+  </div>
+
+  <!-- ===================== PAIN SECTION ===================== -->
+  <section style="padding:80px 40px;background:#0d0d0d;">
+    <div style="max-width:560px;margin-bottom:56px;" class="reveal">
+      <p style="font-size:11px;color:#444;letter-spacing:0.18em;text-transform:uppercase;margin-bottom:16px;">The problem</p>
+      <h2 class="font-serif" style="font-size:48px;line-height:1.1;font-weight:500;color:white;margin-bottom:16px;">
+        The financial system was built for the wealthy. <span class="g-text">Not for you.</span>
+      </h2>
+      <p style="font-size:14px;color:#444;line-height:1.8;">
+        For decades, sophisticated investment tools, tax strategies, and wealth management advice were locked behind $10,000 minimum accounts and $500/hour advisors. REIDY changes that.
+      </p>
+    </div>
+
+    <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:16px;" class="stagger">
+      <div class="card-dark hover-lift reveal" style="padding:28px;">
+        <div style="font-size:28px;margin-bottom:16px;">📉</div>
+        <h3 style="font-size:16px;font-weight:600;color:white;margin-bottom:10px;">Inflation is your silent enemy</h3>
+        <p style="font-size:13px;color:#444;line-height:1.7;">A savings account earning 0.5% APY while inflation runs at 3.4% means you're <span class="pain-stat">losing purchasing power every single day.</span></p>
+        <div style="margin-top:16px;padding:12px;background:#1a1a1a;border-radius:12px;font-size:12px;color:#555;">
+          Avg American savings: <span class="pain-stat">-2.9% real return/yr</span>
+        </div>
+      </div>
+      <div class="card-dark hover-lift reveal" style="padding:28px;">
+        <div style="font-size:28px;margin-bottom:16px;">😰</div>
+        <h3 style="font-size:16px;font-weight:600;color:white;margin-bottom:10px;">Retirement feels impossible</h3>
+        <p style="font-size:13px;color:#444;line-height:1.7;"><span class="pain-stat">55% of Americans</span> fear outliving their savings. The pension era is over — and most people don't know where to start.</p>
+        <div style="margin-top:16px;padding:12px;background:#1a1a1a;border-radius:12px;font-size:12px;color:#555;">
+          Median retirement savings at 50: <span class="pain-stat">$87,000</span>
+        </div>
+      </div>
+      <div class="card-dark hover-lift reveal" style="padding:28px;">
+        <div style="font-size:28px;margin-bottom:16px;">📊</div>
+        <h3 style="font-size:16px;font-weight:600;color:white;margin-bottom:10px;">The market moves without you</h3>
+        <p style="font-size:13px;color:#444;line-height:1.7;">The S&amp;P 500 returns 10.5%/yr historically. <span class="pain-stat">The average investor captures less than 4%</span> — because emotion gets in the way.</p>
+        <div style="margin-top:16px;padding:12px;background:#1a1a1a;border-radius:12px;font-size:12px;color:#555;">
+          Missed gains last decade: <span class="pain-stat">~$47,000 avg</span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===================== PLATFORM SECTION ===================== -->
+  <section style="padding:40px 40px 80px;background:#0d0d0d;">
+    <div style="display:flex;gap:40px;align-items:flex-start;">
+      <div style="width:36%;flex-shrink:0;padding-top:8px;" class="reveal-left">
+        <p style="font-size:11px;color:#444;letter-spacing:0.18em;text-transform:uppercase;margin-bottom:16px;">The solution</p>
+        <h2 class="font-serif" style="font-size:38px;line-height:1.12;font-weight:500;color:white;margin-bottom:18px;">
+          One platform for wealth management &amp; investment protection
+        </h2>
+        <p style="font-size:13px;line-height:1.8;color:#444;margin-bottom:36px;">
+          Say goodbye to scattered apps, guesswork, and missed opportunities. REIDY gives you AI-powered portfolio management, real-time risk analysis, and tax optimization — all in one place.
+        </p>
+        <div style="display:flex;gap:12px;">
+          <div class="card-white hover-lift" style="padding:16px;width:145px;cursor:pointer;">
+            <span style="display:inline-block;font-size:10px;font-weight:700;border-radius:50px;padding:2px 10px;margin-bottom:12px;background:rgba(0,200,150,0.1);color:#00a07a;">Growing</span>
+            <div style="height:76px;display:flex;align-items:center;justify-content:center;background:#f4f9f7;border-radius:12px;margin-bottom:12px;">
+              <svg width="44" height="44" viewBox="0 0 44 44" fill="none">
+                <rect x="3" y="26" width="9" height="15" rx="2" fill="#e0e0e0"/>
+                <rect x="17" y="16" width="9" height="25" rx="2" fill="#ccc"/>
+                <rect x="32" y="6" width="9" height="35" rx="2" fill="#00c896"/>
+              </svg>
+            </div>
+            <p style="font-size:10px;font-weight:600;text-align:center;color:#333;margin-bottom:10px;">Investment Portfolio</p>
+            <button style="width:100%;background:#0d0d0d;color:white;border-radius:50px;padding:6px 0;font-size:10px;font-weight:600;border:none;cursor:pointer;">View details</button>
+          </div>
+          <div class="card-white hover-lift" style="padding:16px;width:145px;cursor:pointer;">
+            <span style="display:inline-block;font-size:10px;font-weight:700;border-radius:50px;padding:2px 10px;margin-bottom:12px;background:rgba(74,158,255,0.1);color:#1a6fd4;">Active</span>
+            <div style="height:76px;display:flex;align-items:center;justify-content:center;background:#f0f6ff;border-radius:12px;margin-bottom:12px;">
+              <svg width="44" height="44" viewBox="0 0 44 44" fill="none">
+                <circle cx="22" cy="22" r="14" stroke="#e0e8f0" stroke-width="2.5" fill="none"/>
+                <path d="M22 10 A12 12 0 0 1 34 22" stroke="#4a9eff" stroke-width="2.5" stroke-linecap="round" fill="none"/>
+                <line x1="22" y1="14" x2="22" y2="22" stroke="#4a9eff" stroke-width="2" stroke-linecap="round"/>
+                <line x1="22" y1="22" x2="29" y2="26" stroke="#4a9eff" stroke-width="2" stroke-linecap="round"/>
+              </svg>
+            </div>
+            <p style="font-size:10px;font-weight:600;text-align:center;color:#333;margin-bottom:10px;">Savings Plan</p>
+            <button style="width:100%;background:transparent;color:#0d0d0d;border:1.5px solid #0d0d0d;border-radius:50px;padding:6px 0;font-size:10px;font-weight:600;cursor:pointer;">Manage plan</button>
+          </div>
+        </div>
+      </div>
+
+      <div style="display:flex;gap:16px;flex:1;align-items:flex-start;" class="reveal-right">
+        <div class="card-white hover-lift" style="padding:20px;width:215px;flex-shrink:0;box-shadow:0 20px 60px rgba(0,0,0,0.5);">
+          <div style="height:100px;display:flex;align-items:center;justify-content:center;background:#f8f8f8;border-radius:16px;margin-bottom:16px;">
+            <svg width="70" height="56" viewBox="0 0 70 56" fill="none">
+              <rect x="2" y="32" width="12" height="22" rx="2.5" fill="#e5e7eb"/>
+              <rect x="20" y="20" width="12" height="34" rx="2.5" fill="#d1d5db"/>
+              <rect x="38" y="8" width="12" height="46" rx="2.5" fill="#f0c040"/>
+              <rect x="56" y="2" width="12" height="52" rx="2.5" fill="#00c896"/>
+              <polyline points="8,44 26,32 44,16 62,8" stroke="#0d0d0d" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" fill="none"/>
+              <circle cx="62" cy="8" r="2.5" fill="#0d0d0d"/>
+            </svg>
+          </div>
+          <h3 style="font-weight:700;font-size:13px;color:#0d0d0d;margin-bottom:10px;">Choose a Financial Plan</h3>
+          <ul style="font-size:11px;color:#888;list-style:none;margin-bottom:16px;display:flex;flex-direction:column;gap:6px;">
+            <li style="display:flex;align-items:center;gap:6px;"><span style="width:4px;height:4px;border-radius:50%;background:#ccc;flex-shrink:0;"></span>AI portfolio rebalancing</li>
+            <li style="display:flex;align-items:center;gap:6px;"><span style="width:4px;height:4px;border-radius:50%;background:#ccc;flex-shrink:0;"></span>Real-time risk analysis</li>
+            <li style="display:flex;align-items:center;gap:6px;"><span style="width:4px;height:4px;border-radius:50%;background:#ccc;flex-shrink:0;"></span>Tax-loss harvesting</li>
+          </ul>
+          <!-- Interactive plan selector -->
+          <div style="display:flex;flex-direction:column;gap:6px;margin-bottom:16px;" id="planOptions">
+            <div class="plan-option" data-plan="Starter" data-price="29" onclick="selectPlan(this)" style="display:flex;justify-content:space-between;font-size:11px;padding:8px 12px;border:1px solid #eee;border-radius:8px;cursor:pointer;transition:all 0.2s;">
+              <span style="color:#888;">Starter</span><span style="font-weight:700;color:#0d0d0d;">$29/mo</span>
+            </div>
+            <div class="plan-option selected" data-plan="Pro" data-price="79" onclick="selectPlan(this)" style="display:flex;justify-content:space-between;font-size:11px;padding:8px 12px;border:2px solid #00c896;border-radius:8px;cursor:pointer;background:#f0fff8;transition:all 0.2s;">
+              <span style="color:#00a07a;font-weight:600;">Pro ⭐</span><span style="font-weight:700;color:#0d0d0d;">$79/mo</span>
+            </div>
+            <div class="plan-option" data-plan="Enterprise" data-price="199" onclick="selectPlan(this)" style="display:flex;justify-content:space-between;font-size:11px;padding:8px 12px;border:1px solid #eee;border-radius:8px;cursor:pointer;transition:all 0.2s;">
+              <span style="color:#888;">Enterprise</span><span style="font-weight:700;color:#0d0d0d;">$199/mo</span>
+            </div>
+          </div>
+          <button class="g-btn-animated ripple-btn" onclick="addRipple(event)" id="planCta" style="width:100%;color:#0d0d0d;border-radius:50px;padding:10px 0;font-size:12px;font-weight:700;border:none;cursor:pointer;">Start Pro free trial</button>
+        </div>
+
+        <!-- Performance card with animated chart -->
+        <div class="card-white hover-lift" style="flex:1;padding:20px;box-shadow:0 20px 60px rgba(0,0,0,0.5);">
+          <h3 style="font-weight:700;font-size:15px;color:#0d0d0d;margin-bottom:12px;">Portfolio Performance</h3>
+          <div style="display:flex;gap:4px;margin-bottom:20px;">
+            <button class="perf-tab" onclick="switchTab(this,'total')" style="font-size:11px;padding:5px 12px;border-radius:50px;color:#aaa;background:transparent;border:none;cursor:pointer;">Running total</button>
+            <button class="perf-tab active" onclick="switchTab(this,'month')" class="g-btn" style="font-size:11px;padding:5px 12px;border-radius:50px;color:#0d0d0d;border:none;cursor:pointer;font-weight:700;background:linear-gradient(90deg,#f0c040,#00c896,#4a9eff);">Month/month</button>
+            <button class="perf-tab" onclick="switchTab(this,'day')" style="font-size:11px;padding:5px 12px;border-radius:50px;color:#aaa;background:transparent;border:none;cursor:pointer;">Day over day</button>
+          </div>
+          <div style="height:140px;position:relative;" id="perfChart">
+            <svg viewBox="0 0 300 100" id="perfSvg" style="width:100%;height:100%;" preserveAspectRatio="none">
+              <defs>
+                <linearGradient id="ag2" x1="0" y1="0" x2="0" y2="1">
+                  <stop offset="0%" stop-color="#00c896" stop-opacity="0.18"/>
+                  <stop offset="100%" stop-color="#00c896" stop-opacity="0"/>
+                </linearGradient>
+              </defs>
+              <line x1="0" y1="20" x2="300" y2="20" stroke="#f4f4f4" stroke-width="0.8"/>
+              <line x1="0" y1="45" x2="300" y2="45" stroke="#f4f4f4" stroke-width="0.8"/>
+              <line x1="0" y1="70" x2="300" y2="70" stroke="#f4f4f4" stroke-width="0.8"/>
+              <line x1="0" y1="95" x2="300" y2="95" stroke="#f4f4f4" stroke-width="0.8"/>
+              <line x1="60" y1="0" x2="60" y2="100" stroke="#f8f8f8" stroke-width="0.8"/>
+              <line x1="120" y1="0" x2="120" y2="100" stroke="#f8f8f8" stroke-width="0.8"/>
+              <line x1="180" y1="0" x2="180" y2="100" stroke="#f8f8f8" stroke-width="0.8"/>
+              <line x1="240" y1="0" x2="240" y2="100" stroke="#f8f8f8" stroke-width="0.8"/>
+              <path id="perfArea" d="M0 88 C15 84 25 78 40 74 C55 70 65 80 80 70 C95 60 105 74 120 60 C135 46 145 58 165 42 C185 26 195 40 215 24 C235 10 250 20 270 13 C285 8 295 11 300 9 L300 100 L0 100Z" fill="url(#ag2)" style="transition:d 0.8s ease;"/>
+              <path class="chart-line" id="perfLine" d="M0 88 C15 84 25 78 40 74 C55 70 65 80 80 70 C95 60 105 74 120 60 C135 46 145 58 165 42 C185 26 195 40 215 24 C235 10 250 20 270 13 C285 8 295 11 300 9" fill="none" stroke="#00c896" stroke-width="1.5"/>
+              <line x1="210" y1="0" x2="210" y2="100" stroke="#00c896" stroke-width="1" stroke-dasharray="3,3" opacity="0.4"/>
+              <circle cx="210" cy="25" r="3" fill="#00c896"/>
+            </svg>
+          </div>
+          <div style="display:flex;justify-content:space-between;font-size:10px;color:#bbb;margin-top:4px;font-weight:500;letter-spacing:0.06em;text-transform:uppercase;" id="perfLabels">
+            <span>March</span><span>April</span><span>May</span><span>June</span><span>July</span><span>August</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===================== DREAM SECTION ===================== -->
+  <section style="padding:80px 40px;background:#111;border-top:1px solid #1a1a1a;border-bottom:1px solid #1a1a1a;">
+    <div style="text-align:center;margin-bottom:56px;" class="reveal">
+      <p style="font-size:11px;color:#444;letter-spacing:0.18em;text-transform:uppercase;margin-bottom:16px;">Your future</p>
+      <h2 class="font-serif" style="font-size:50px;line-height:1.08;font-weight:500;color:white;">What could your money<br>become with REIDY?</h2>
+    </div>
+    <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:20px;max-width:1000px;margin:0 auto;" class="stagger">
+      <div class="card-dark hover-lift reveal" style="padding:28px;text-align:center;">
+        <div style="font-size:36px;margin-bottom:16px;">🏖️</div>
+        <h3 class="font-serif" style="font-size:22px;font-weight:500;color:white;margin-bottom:8px;">Retire at 55</h3>
+        <p style="font-size:13px;color:#444;line-height:1.7;margin-bottom:20px;">Start with $15,000 today. With REIDY's AI compounding strategy, you could reach financial independence a decade early.</p>
+        <div style="background:#1a1a1a;border-radius:12px;padding:14px;">
+          <div style="font-size:11px;color:#444;margin-bottom:4px;">Projected at retirement</div>
+          <div class="font-serif count-num" style="font-size:28px;font-weight:600;color:#00c896;" data-count="1240000" data-prefix="$" data-suffix="">$0</div>
+          <div style="font-size:10px;color:#333;margin-top:2px;">Based on avg 18.3% annual return</div>
+        </div>
+      </div>
+      <div class="card-dark hover-lift reveal" style="padding:28px;text-align:center;">
+        <div style="font-size:36px;margin-bottom:16px;">🏡</div>
+        <h3 class="font-serif" style="font-size:22px;font-weight:500;color:white;margin-bottom:8px;">Own Your Home</h3>
+        <p style="font-size:13px;color:#444;line-height:1.7;margin-bottom:20px;">Build a down payment faster with REIDY's goal-based saving tools. Set a target, automate contributions, watch it happen.</p>
+        <div style="background:#1a1a1a;border-radius:12px;padding:14px;">
+          <div style="font-size:11px;color:#444;margin-bottom:4px;">Down payment ready in</div>
+          <div class="font-serif" style="font-size:28px;font-weight:600;color:#f0c040;">3.2 years</div>
+          <div style="font-size:10px;color:#333;margin-top:2px;">Saving $800/mo with REIDY Pro</div>
+        </div>
+      </div>
+      <div class="card-dark hover-lift reveal" style="padding:28px;text-align:center;">
+        <div style="font-size:36px;margin-bottom:16px;">👨‍👩‍👧</div>
+        <h3 class="font-serif" style="font-size:22px;font-weight:500;color:white;margin-bottom:8px;">Build a Legacy</h3>
+        <p style="font-size:13px;color:#444;line-height:1.7;margin-bottom:20px;">Break the cycle. Create generational wealth your children will benefit from — starting with whatever you have today.</p>
+        <div style="background:#1a1a1a;border-radius:12px;padding:14px;">
+          <div style="font-size:11px;color:#444;margin-bottom:4px;">Generational impact (30yr)</div>
+          <div class="font-serif count-num" style="font-size:28px;font-weight:600;color:#4a9eff;" data-count="4.8" data-prefix="$" data-suffix="M">$0M</div>
+          <div style="font-size:10px;color:#333;margin-top:2px;">Starting with $500/mo invested</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===================== OMAR SPOTLIGHT ===================== -->
+  <section style="padding:80px 40px;background:#0d0d0d;position:relative;overflow:hidden;">
+    <!-- Subtle spotlight bg -->
+    <div style="position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);width:600px;height:400px;background:radial-gradient(ellipse,rgba(240,192,64,0.04) 0%,transparent 70%);pointer-events:none;"></div>
+
+    <div style="max-width:900px;margin:0 auto;" class="reveal">
+      <p style="font-size:11px;color:#444;letter-spacing:0.18em;text-transform:uppercase;margin-bottom:16px;text-align:center;">Investor Spotlight</p>
+      <h2 class="font-serif" style="font-size:42px;font-weight:500;color:white;text-align:center;margin-bottom:48px;">Meet Investor Omar</h2>
+
+      <!-- Featured Omar Card -->
+      <div class="omar-card card-dark" style="padding:40px;border:1px solid #2a2a1a;display:flex;gap:40px;align-items:center;position:relative;overflow:hidden;border-radius:28px;">
+        <!-- Gold accent bar -->
+        <div style="position:absolute;left:0;top:0;bottom:0;width:3px;background:linear-gradient(180deg,#f0c040,#00c896);border-radius:3px 0 0 3px;"></div>
+
+        <!-- Avatar -->
+        <div style="flex-shrink:0;text-align:center;">
+          <div class="g-btn" style="width:88px;height:88px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:28px;font-weight:900;color:#0d0d0d;margin:0 auto 12px;">OR</div>
+          <div style="font-size:14px;font-weight:700;color:white;">Omar R.</div>
+          <div style="font-size:11px;color:#555;margin-top:2px;">Investor & Entrepreneur</div>
+          <div style="font-size:10px;color:#444;margin-top:2px;">Miami, FL</div>
+          <div style="display:flex;justify-content:center;margin-top:8px;">
+            <span style="color:#f0c040;font-size:12px;">★★★★★</span>
+          </div>
+        </div>
+
+        <!-- Quote -->
+        <div style="flex:1;">
+          <div style="font-size:32px;color:#2a2a1a;font-family:Georgia,serif;line-height:1;margin-bottom:8px;">"</div>
+          <p class="font-serif" style="font-size:20px;color:white;line-height:1.55;margin-bottom:20px;font-style:italic;">
+            REIDY didn't just grow my money — it changed how I think about wealth. I started with $22,000, and within 18 months I had a fully diversified portfolio worth <span class="g-text" style="font-style:normal;font-weight:600;">$61,400</span>. The AI rebalancing and tax tools alone saved me over $8,000 last year. This is the platform I wish existed when I started.
+          </p>
+          <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:16px;margin-top:24px;">
+            <div style="background:#1a1a1a;border-radius:12px;padding:14px;text-align:center;">
+              <div style="font-size:10px;color:#444;margin-bottom:4px;text-transform:uppercase;letter-spacing:0.08em;">Starting Capital</div>
+              <div class="font-serif" style="font-size:22px;font-weight:600;color:white;">$22,000</div>
+            </div>
+            <div style="background:#1a1a1a;border-radius:12px;padding:14px;text-align:center;">
+              <div style="font-size:10px;color:#444;margin-bottom:4px;text-transform:uppercase;letter-spacing:0.08em;">Current Value</div>
+              <div class="font-serif" style="font-size:22px;font-weight:600;color:#00c896;">$61,400</div>
+            </div>
+            <div style="background:#1a1a1a;border-radius:12px;padding:14px;text-align:center;">
+              <div style="font-size:10px;color:#444;margin-bottom:4px;text-transform:uppercase;letter-spacing:0.08em;">Tax Saved</div>
+              <div class="font-serif" style="font-size:22px;font-weight:600;color:#f0c040;">$8,200</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===================== TESTIMONIALS ===================== -->
+  <section style="padding:0 40px 80px;background:#0d0d0d;">
+    <div style="text-align:center;margin-bottom:48px;" class="reveal">
+      <p style="font-size:11px;color:#444;letter-spacing:0.18em;text-transform:uppercase;margin-bottom:16px;">Real people. Real results.</p>
+      <h2 class="font-serif" style="font-size:42px;font-weight:500;color:white;">Everyday Americans<br>changing their financial future</h2>
+    </div>
+    <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:20px;" class="stagger">
+      <div class="card-dark hover-lift reveal" style="padding:28px;">
+        <div style="display:flex;gap:2px;margin-bottom:14px;"><span style="color:#f0c040;font-size:14px;">★★★★★</span></div>
+        <p style="font-size:13px;color:#666;line-height:1.8;margin-bottom:20px;">"I'm a nurse working 60-hour weeks. REIDY basically does it for me. In 14 months my portfolio went from $8,000 to <span style="color:white;font-weight:600;">$19,400</span>."</p>
+        <div style="display:flex;align-items:center;gap:12px;">
+          <div style="width:36px;height:36px;border-radius:50%;background:#1a2a1a;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:13px;color:#00c896;flex-shrink:0;">JL</div>
+          <div><div style="font-size:13px;font-weight:600;color:white;">Jessica L.</div><div style="font-size:11px;color:#444;">Registered Nurse · Houston, TX</div></div>
+        </div>
+      </div>
+      <div class="card-dark hover-lift reveal" style="padding:28px;">
+        <div style="display:flex;gap:2px;margin-bottom:14px;"><span style="color:#f0c040;font-size:14px;">★★★★★</span></div>
+        <p style="font-size:13px;color:#666;line-height:1.8;margin-bottom:20px;">"On a teacher's salary I built a <span style="color:white;font-weight:600;">$42,000 portfolio</span> in under 2 years. My dad retired with nothing — that won't be my story."</p>
+        <div style="display:flex;align-items:center;gap:12px;">
+          <div style="width:36px;height:36px;border-radius:50%;background:#1a1a2a;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:13px;color:#4a9eff;flex-shrink:0;">MR</div>
+          <div><div style="font-size:13px;font-weight:600;color:white;">Marcus R.</div><div style="font-size:11px;color:#444;">Teacher · Atlanta, GA</div></div>
+        </div>
+      </div>
+      <div class="card-dark hover-lift reveal" style="padding:28px;">
+        <div style="display:flex;gap:2px;margin-bottom:14px;"><span style="color:#f0c040;font-size:14px;">★★★★★</span></div>
+        <p style="font-size:13px;color:#666;line-height:1.8;margin-bottom:20px;">"I'm a contractor with variable income. REIDY's AI adjusts automatically. <span style="color:white;font-weight:600;">First financial tool that actually fits my life.</span>"</p>
+        <div style="display:flex;align-items:center;gap:12px;">
+          <div style="width:36px;height:36px;border-radius:50%;background:#2a1a1a;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:13px;color:#f0c040;flex-shrink:0;">TK</div>
+          <div><div style="font-size:13px;font-weight:600;color:white;">Tom K.</div><div style="font-size:11px;color:#444;">Contractor · Phoenix, AZ</div></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===================== PRICING / GLOBAL ===================== -->
+  <section style="position:relative;overflow:hidden;min-height:600px;">
+    <div style="position:absolute;inset:0;right:50%;background:linear-gradient(145deg,#f0c040 0%,#00c896 50%,#4a9eff 100%);"></div>
+    <div style="position:absolute;inset:0;left:50%;background:#0d0d0d;"></div>
+    <div style="position:relative;z-index:10;display:flex;align-items:center;min-height:600px;">
+      <div style="position:absolute;right:28px;top:50%;transform:translateY(-50%);display:flex;flex-direction:column;gap:24px;">
+        <span style="font-size:10px;color:#222;font-weight:500;">01</span>
+        <span style="font-size:10px;color:#222;font-weight:500;">02</span>
+        <span style="font-size:10px;color:#333;font-weight:500;">03</span>
+      </div>
+      <div style="width:50%;display:flex;justify-content:center;padding:56px 40px;" class="reveal-left">
+        <div class="card-white" style="width:340px;padding:32px;box-shadow:0 30px 80px rgba(0,0,0,0.25);color:#0d0d0d;">
+          <div style="display:flex;align-items:center;justify-content:center;gap:10px;margin-bottom:4px;">
+            <div class="g-btn" style="width:20px;height:20px;border-radius:50%;display:flex;align-items:center;justify-content:center;"><span style="color:#0d0d0d;font-weight:900;font-size:9px;">R</span></div>
+            <span style="font-weight:800;font-size:16px;letter-spacing:0.15em;">REIDY</span>
+            <span style="color:#d1d5db;font-size:18px;">|</span>
+            <span style="font-weight:600;font-size:15px;">Pro</span>
+          </div>
+          <h3 class="font-serif" style="text-align:center;font-size:23px;font-weight:500;margin:10px 0 22px;">Protect Your Wealth</h3>
+          <div style="display:flex;gap:8px;margin-bottom:20px;">
+            <div style="flex:1;border:1px solid #eee;border-radius:16px;padding:12px 8px;text-align:center;">
+              <div style="font-size:10px;color:#888;font-weight:600;margin-bottom:2px;">Starter</div>
+              <div style="font-size:9px;color:#bbb;margin-bottom:8px;">Monthly</div>
+              <div style="font-size:18px;font-weight:700;">$29</div>
+            </div>
+            <div style="flex:1;border:2px solid #00c896;border-radius:16px;padding:12px 8px;text-align:center;position:relative;">
+              <div style="position:absolute;top:-10px;left:50%;transform:translateX(-50%);font-size:12px;">⭐</div>
+              <div style="font-size:10px;color:#888;font-weight:600;margin-bottom:2px;">Pro</div>
+              <div style="font-size:9px;color:#bbb;margin-bottom:8px;">Monthly</div>
+              <div style="font-size:18px;font-weight:700;">$79</div>
+              <div style="height:2px;width:28px;margin:4px auto 0;background:#00c896;border-radius:2px;"></div>
+            </div>
+            <div style="flex:1;border:1px solid #eee;border-radius:16px;padding:12px 8px;text-align:center;">
+              <div style="font-size:10px;color:#888;font-weight:600;margin-bottom:2px;">Enterprise</div>
+              <div style="font-size:9px;color:#bbb;margin-bottom:8px;">Monthly</div>
+              <div style="font-size:18px;font-weight:700;">$199</div>
+            </div>
+          </div>
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px 16px;margin-bottom:22px;">
+            <div style="display:flex;align-items:center;gap:6px;font-size:12px;color:#444;"><svg width="14" height="14" fill="none" stroke="#0d0d0d" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M5 13l4 4L19 7"/></svg>AI Rebalancing</div>
+            <div style="display:flex;align-items:center;gap:6px;font-size:12px;color:#444;"><svg width="14" height="14" fill="none" stroke="#0d0d0d" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M5 13l4 4L19 7"/></svg>Risk Analysis</div>
+            <div style="display:flex;align-items:center;gap:6px;font-size:12px;color:#444;"><svg width="14" height="14" fill="none" stroke="#0d0d0d" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M5 13l4 4L19 7"/></svg>Tax Optimization</div>
+            <div style="display:flex;align-items:center;gap:6px;font-size:12px;color:#444;"><svg width="14" height="14" fill="none" stroke="#0d0d0d" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M5 13l4 4L19 7"/></svg>24/7 Support</div>
+          </div>
+          <button style="width:100%;background:#0d0d0d;color:white;border-radius:50px;padding:12px 0;font-size:13px;font-weight:700;border:none;cursor:pointer;">Start free trial</button>
+        </div>
+      </div>
+      <div style="width:50%;padding:56px 48px;color:white;" class="reveal-right">
+        <p style="font-size:11px;font-weight:700;letter-spacing:0.18em;text-transform:uppercase;color:#333;margin-bottom:20px;">Tools Available Everywhere</p>
+        <h2 class="font-serif" style="font-size:42px;line-height:1.1;font-weight:500;margin-bottom:20px;">Financial tools for global markets</h2>
+        <p style="font-size:13px;line-height:1.85;color:#444;max-width:400px;margin-bottom:32px;">Available for clients in the US, EU, and across 60+ countries. REIDY delivers institutional-grade tools to everyday investors — with full regulatory compliance, real-time data, and bank-level security.</p>
+        <button style="border:1.5px solid rgba(255,255,255,0.2);color:white;background:transparent;border-radius:50px;padding:12px 28px;font-size:13px;font-weight:600;cursor:pointer;transition:all 0.2s;" onmouseover="this.style.borderColor='rgba(255,255,255,0.5)'" onmouseout="this.style.borderColor='rgba(255,255,255,0.2)'">Schedule a Demo</button>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===================== FINAL CTA ===================== -->
+  <section class="cta-gradient" style="padding:100px 40px;text-align:center;border-top:1px solid #1a1a1a;">
+    <p style="font-size:11px;color:#333;letter-spacing:0.18em;text-transform:uppercase;margin-bottom:20px;" class="reveal">Start today</p>
+    <h2 class="font-serif reveal" style="font-size:60px;line-height:1.05;font-weight:500;color:white;margin-bottom:14px;">
+      Your future self<br>will thank you.
+    </h2>
+    <p style="font-size:14px;color:#444;margin-bottom:40px;max-width:420px;margin-left:auto;margin-right:auto;line-height:1.7;" class="reveal">Every day you wait is a day your money isn't growing. Join 47,000+ Americans who decided their financial future was worth $0 to start.</p>
+    <div style="display:flex;justify-content:center;gap:12px;" class="reveal">
+      <button class="g-btn-animated ripple-btn" onclick="addRipple(event)" style="color:#0d0d0d;border-radius:50px;padding:18px 44px;font-size:16px;font-weight:700;border:none;cursor:pointer;">Start Free — No Card Needed</button>
+    </div>
+    <p style="font-size:11px;color:#2a2a2a;margin-top:18px;" class="reveal">30-day free trial · Cancel anytime · Bank-level 256-bit encryption</p>
+  </section>
+
+  <!-- ===================== JAVASCRIPT ===================== -->
+  <script>
+    // ——— NAV SCROLL STATE ———
+    window.addEventListener('scroll', () => {
+      document.getElementById('mainNav').style.background =
+        window.scrollY > 40 ? 'rgba(13,13,13,0.96)' : '#0d0d0d';
+      document.getElementById('mainNav').style.backdropFilter =
+        window.scrollY > 40 ? 'blur(16px)' : 'none';
+    });
+
+    // ——— SCROLL REVEAL ———
+    const revealObserver = new IntersectionObserver((entries) => {
+      entries.forEach(e => {
+        if (e.isIntersecting) {
+          e.target.classList.add('visible');
+          // Trigger count-up if element has data-count
+          const counter = e.target.querySelector ? e.target.querySelector('[data-count]') : null;
+          if (e.target.hasAttribute && e.target.hasAttribute('data-count')) animateCount(e.target);
+          revealObserver.unobserve(e.target);
+        }
+      });
+    }, { threshold: 0.15 });
+
+    document.querySelectorAll('.reveal, .reveal-left, .reveal-right').forEach(el => revealObserver.observe(el));
+
+    // ——— COUNT-UP ANIMATION ———
+    function animateCount(el) {
+      const target = parseFloat(el.getAttribute('data-count'));
+      const prefix = el.getAttribute('data-prefix') || '';
+      const suffix = el.getAttribute('data-suffix') || '';
+      const isLarge = target > 100;
+      const duration = 1800;
+      const start = performance.now();
+
+      function update(now) {
+        const elapsed = now - start;
+        const progress = Math.min(elapsed / duration, 1);
+        const eased = 1 - Math.pow(1 - progress, 3);
+        const current = target * eased;
+
+        if (isLarge) {
+          el.textContent = prefix + Math.floor(current).toLocaleString() + suffix;
+        } else {
+          el.textContent = prefix + (Math.round(current * 10) / 10).toLocaleString() + suffix;
+        }
+        if (progress < 1) requestAnimationFrame(update);
+      }
+      requestAnimationFrame(update);
+    }
+
+    // Trust bar count-up
+    const trustObserver = new IntersectionObserver((entries) => {
+      entries.forEach(e => {
+        if (e.isIntersecting) {
+          e.target.querySelectorAll('[data-count]').forEach(animateCount);
+          trustObserver.unobserve(e.target);
+        }
+      });
+    }, { threshold: 0.3 });
+    const trustBar = document.getElementById('trustBar');
+    if (trustBar) trustObserver.observe(trustBar);
+
+    // Dream section count-up
+    const dreamObserver = new IntersectionObserver((entries) => {
+      entries.forEach(e => {
+        if (e.isIntersecting && e.target.hasAttribute('data-count')) {
+          animateCount(e.target);
+          dreamObserver.unobserve(e.target);
+        }
+      });
+    }, { threshold: 0.5 });
+    document.querySelectorAll('[data-count]').forEach(el => dreamObserver.observe(el));
+
+    // ——— HERO CHART DRAW ON LOAD ———
+    setTimeout(() => {
+      document.getElementById('sparkLine').classList.add('drawn');
+      document.getElementById('sparkArea').classList.add('drawn');
+      document.getElementById('perfLine').classList.add('drawn');
+      // Animate allocation bars
+      setTimeout(() => {
+        document.querySelectorAll('.alloc-bar').forEach(bar => {
+          bar.style.width = bar.getAttribute('data-target') + '%';
+        });
+      }, 400);
+    }, 600);
+
+    // ——— LIVE PORTFOLIO VALUE (slowly ticks up) ———
+    let portfolioBase = 248392;
+    setInterval(() => {
+      const delta = Math.floor(Math.random() * 8) - 2;
+      if (delta === 0) return;
+      portfolioBase += delta;
+      const el = document.getElementById('portfolioValue');
+      if (el) {
+        el.textContent = '$' + portfolioBase.toLocaleString();
+        el.style.animation = 'none';
+        el.offsetHeight; // reflow
+        el.style.animation = 'valueFlash 0.3s ease';
+      }
+    }, 3000);
+
+    // ——— INTERACTIVE PLAN SELECTOR ———
+    function selectPlan(el) {
+      document.querySelectorAll('.plan-option').forEach(opt => {
+        opt.style.border = '1px solid #eee';
+        opt.style.background = 'transparent';
+        opt.querySelector('span').style.color = '#888';
+        opt.querySelector('span').style.fontWeight = 'normal';
+      });
+      el.style.border = '2px solid #00c896';
+      el.style.background = '#f0fff8';
+      el.querySelector('span').style.color = '#00a07a';
+      el.querySelector('span').style.fontWeight = '600';
+      const planName = el.getAttribute('data-plan');
+      document.getElementById('planCta').textContent = 'Start ' + planName + ' free trial';
+    }
+
+    // ——— CHART TABS ———
+    const chartData = {
+      total: {
+        line: "M0 95 C20 90 40 82 60 74 C80 66 100 70 120 58 C140 46 160 50 180 36 C200 22 220 28 240 16 C260 8 275 12 300 6",
+        area: "M0 95 C20 90 40 82 60 74 C80 66 100 70 120 58 C140 46 160 50 180 36 C200 22 220 28 240 16 C260 8 275 12 300 6 L300 100 L0 100Z",
+        labels: ['2020','2021','2022','2023','2024','Now']
+      },
+      month: {
+        line: "M0 88 C15 84 25 78 40 74 C55 70 65 80 80 70 C95 60 105 74 120 60 C135 46 145 58 165 42 C185 26 195 40 215 24 C235 10 250 20 270 13 C285 8 295 11 300 9",
+        area: "M0 88 C15 84 25 78 40 74 C55 70 65 80 80 70 C95 60 105 74 120 60 C135 46 145 58 165 42 C185 26 195 40 215 24 C235 10 250 20 270 13 C285 8 295 11 300 9 L300 100 L0 100Z",
+        labels: ['March','April','May','June','July','August']
+      },
+      day: {
+        line: "M0 50 C10 45 20 55 30 48 C40 40 50 52 60 44 C70 36 80 46 90 38 C100 30 110 42 130 32 C150 22 160 34 180 26 C200 18 215 30 230 22 C245 14 260 20 275 14 C285 10 295 12 300 10",
+        area: "M0 50 C10 45 20 55 30 48 C40 40 50 52 60 44 C70 36 80 46 90 38 C100 30 110 42 130 32 C150 22 160 34 180 26 C200 18 215 30 230 22 C245 14 260 20 275 14 C285 10 295 12 300 10 L300 100 L0 100Z",
+        labels: ['9am','10am','11am','12pm','1pm','2pm']
+      }
+    };
+    function switchTab(btn, key) {
+      document.querySelectorAll('.perf-tab').forEach(t => {
+        t.style.background = 'transparent'; t.style.color = '#aaa'; t.style.fontWeight = '500';
+      });
+      btn.style.background = 'linear-gradient(90deg,#f0c040,#00c896,#4a9eff)';
+      btn.style.color = '#0d0d0d'; btn.style.fontWeight = '700';
+      const d = chartData[key];
+      document.getElementById('perfLine').setAttribute('d', d.line);
+      document.getElementById('perfArea').setAttribute('d', d.area);
+      const labels = document.getElementById('perfLabels');
+      labels.innerHTML = d.labels.map(l => `<span>${l}</span>`).join('');
+      // Re-animate line
+      const line = document.getElementById('perfLine');
+      line.style.strokeDashoffset = '600'; line.style.transition = 'none';
+      setTimeout(() => { line.style.transition = 'stroke-dashoffset 1.2s ease'; line.style.strokeDashoffset = '0'; }, 50);
+    }
+
+    // ——— RIPPLE EFFECT ———
+    function addRipple(e) {
+      const btn = e.currentTarget;
+      const circle = document.createElement('span');
+      const diameter = Math.max(btn.clientWidth, btn.clientHeight);
+      const radius = diameter / 2;
+      const rect = btn.getBoundingClientRect();
+      circle.style.cssText = `width:${diameter}px;height:${diameter}px;left:${e.clientX - rect.left - radius}px;top:${e.clientY - rect.top - radius}px;`;
+      circle.classList.add('ripple');
+      const existingRipple = btn.querySelector('.ripple');
+      if (existingRipple) existingRipple.remove();
+      btn.appendChild(circle);
+    }
+
+    // ——— PARTICLE CANVAS ———
+    const canvas = document.getElementById('particleCanvas');
+    const ctx = canvas.getContext('2d');
+    let particles = [];
+
+    function resizeCanvas() {
+      canvas.width = canvas.offsetWidth;
+      canvas.height = canvas.offsetHeight;
+    }
+    resizeCanvas();
+
+    class Particle {
+      constructor() { this.reset(); }
+      reset() {
+        this.x = Math.random() * canvas.width;
+        this.y = Math.random() * canvas.height;
+        this.size = Math.random() * 1.5 + 0.3;
+        this.speedX = (Math.random() - 0.5) * 0.3;
+        this.speedY = (Math.random() - 0.5) * 0.3;
+        this.opacity = Math.random() * 0.4 + 0.05;
+        const colors = ['255,255,255','240,192,64','0,200,150','74,158,255'];
+        this.color = colors[Math.floor(Math.random() * colors.length)];
+      }
+      update() {
+        this.x += this.speedX; this.y += this.speedY;
+        if (this.x < 0 || this.x > canvas.width || this.y < 0 || this.y > canvas.height) this.reset();
+      }
+      draw() {
+        ctx.beginPath();
+        ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
+        ctx.fillStyle = `rgba(${this.color},${this.opacity})`;
+        ctx.fill();
+      }
+    }
+
+    for (let i = 0; i < 80; i++) particles.push(new Particle());
+
+    function animateParticles() {
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+      particles.forEach(p => { p.update(); p.draw(); });
+      requestAnimationFrame(animateParticles);
+    }
+    animateParticles();
+    window.addEventListener('resize', resizeCanvas);
+  </script>
+
+</body>
+</html>
