@@ -131,6 +131,65 @@
       background-size: 400% 400%;
       animation: gradientShift 8s ease infinite;
     }
+
+    /* ——— MOBILE RESPONSIVE ——— */
+    @media (max-width: 768px) {
+
+      /* Nav */
+      nav#mainNav { padding: 12px 16px !important; }
+      nav#mainNav > div:first-child { display: none !important; }
+
+      /* Hero */
+      #hero { padding: 40px 20px 48px !important; min-height: auto !important; flex-direction: column !important; align-items: flex-start !important; }
+      #hero > div:first-child { max-width: 100% !important; }
+      #hero > div:first-child h1 { font-size: 42px !important; }
+      #hero > div:first-child p { max-width: 100% !important; }
+      #hero > div:first-child > div:nth-child(4) { flex-direction: column !important; gap: 10px !important; }
+      #hero > div:first-child > div:nth-child(4) button { width: 100% !important; text-align: center !important; }
+      .hero-dashboard { position: static !important; width: 100% !important; transform: none !important; animation: none !important; margin-top: 40px !important; }
+
+      /* Trust bar */
+      #trustBar { flex-wrap: wrap !important; gap: 28px 40px !important; padding: 40px 20px !important; justify-content: center !important; }
+
+      /* Pain section */
+      #hero + div + div { padding: 60px 20px !important; }
+      div[style*="grid-template-columns:repeat(3,1fr)"] { display: flex !important; flex-direction: column !important; }
+
+      /* Pain / Dream / Testimonials section headings */
+      h2.font-serif[style*="font-size:48px"] { font-size: 32px !important; }
+      h2.font-serif[style*="font-size:50px"] { font-size: 32px !important; }
+      h2.font-serif[style*="font-size:42px"] { font-size: 30px !important; }
+      h2.font-serif[style*="font-size:60px"] { font-size: 36px !important; }
+
+      /* Platform section */
+      div[style*="width:36%;flex-shrink:0"] { width: 100% !important; }
+      section > div > div[style*="display:flex;gap:40px;align-items:flex-start"] { flex-direction: column !important; }
+      div[style*="display:flex;gap:16px;flex:1;align-items:flex-start"] { flex-direction: column !important; }
+      div[style*="width:215px;flex-shrink:0"] { width: 100% !important; }
+
+      /* Platform card row (Investment + Savings plan cards) */
+      div[style*="display:flex;gap:12px"] > div[style*="width:145px"] { width: calc(50% - 6px) !important; }
+
+      /* Omar spotlight */
+      div[style*="display:flex;gap:40px;align-items:center"][style*="padding:40px"] { flex-direction: column !important; padding: 28px 20px !important; gap: 24px !important; }
+      div[style*="grid-template-columns:repeat(3,1fr);gap:16px;margin-top:24px"] { grid-template-columns: 1fr !important; }
+
+      /* Pricing / Global split section */
+      div[style*="position:absolute;inset:0;right:50%"] { right: 0 !important; bottom: 50% !important; }
+      div[style*="position:absolute;inset:0;left:50%"] { left: 0 !important; top: 50% !important; }
+      div[style*="display:flex;align-items:center;min-height:600px"] { flex-direction: column !important; min-height: auto !important; }
+      div[style*="width:50%;display:flex;justify-content:center"] { width: 100% !important; padding: 48px 20px 32px !important; }
+      div[style*="width:340px;padding:32px"] { width: 100% !important; }
+      div[style*="width:50%;padding:56px 48px"] { width: 100% !important; padding: 32px 20px 48px !important; }
+
+      /* CTA section */
+      section.cta-gradient { padding: 64px 20px !important; }
+
+      /* General padding reduction */
+      section[style*="padding:80px 40px"] { padding: 60px 20px !important; }
+      section[style*="padding:40px 40px"] { padding: 32px 20px !important; }
+      section[style*="padding:0 40px 80px"] { padding: 0 20px 60px !important; }
+    }
   </style>
 </head>
 <body>
